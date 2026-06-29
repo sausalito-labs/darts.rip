@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 
-const ROUND_PRESETS = [10, 15, 20, 25];
+const ROUND_PRESETS = [10, 15, 20];
 
 interface MaxRoundsCollapsibleProps {
   value: number | undefined;
@@ -16,6 +16,7 @@ export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsiblePr
     value && !ROUND_PRESETS.includes(value) ? String(value) : ''
   );
   const [open, setOpen] = useState(value !== undefined);
+  const isCustomActive = customRounds !== '';
 
   const handlePreset = (preset: number) => {
     if (value === preset) {
@@ -23,6 +24,19 @@ export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsiblePr
     } else {
       onChange(preset);
       setCustomRounds('');
+    }
+  };
+
+  const handleCustomToggle = () => {
+    if (isCustomActive) {
+      setCustomRounds('');
+      onChange(undefined);
+    } else {
+      const initial = value && !ROUND_PRESETS.includes(value) ? String(value) : '';
+      setCustomRounds(initial);
+      if (initial) {
+        onChange(Number(initial));
+      }
     }
   };
 
@@ -50,20 +64,29 @@ export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsiblePr
             <Button
               key={rounds}
               type="button"
-              variant={value === rounds && !customRounds ? 'default' : 'outline'}
+              variant={value === rounds && !isCustomActive ? 'default' : 'outline'}
               onClick={() => handlePreset(rounds)}
             >
               {rounds}
             </Button>
           ))}
+          <Button
+            type="button"
+            variant={isCustomActive ? 'default' : 'outline'}
+            onClick={handleCustomToggle}
+          >
+            Custom
+          </Button>
         </div>
-        <Input
-          type="number"
-          min={1}
-          placeholder="Custom rounds"
-          value={customRounds}
-          onChange={(e) => handleCustomChange(e.target.value)}
-        />
+        {isCustomActive && (
+          <Input
+            type="number"
+            min={1}
+            placeholder="Custom rounds"
+            value={customRounds}
+            onChange={(e) => handleCustomChange(e.target.value)}
+          />
+        )}
       </CollapsibleContent>
     </Collapsible>
   );
