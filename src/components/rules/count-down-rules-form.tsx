@@ -1,13 +1,13 @@
-import { ArrowLeft, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { ArrowLeft, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { InRule, OutRule } from '@/game-engine/types';
-import { useGameStore } from '@/store/gameStore';
+import { useGameStore } from '@/store/game-store';
+import { MaxRoundsCollapsible } from './max-rounds-collapsible';
 
 const STARTING_SCORES = [301, 501, 701];
 const IN_RULES: { value: InRule; label: string }[] = [
@@ -20,7 +20,6 @@ const OUT_RULES: { value: OutRule; label: string }[] = [
   { value: 'double', label: 'Double' },
   { value: 'master', label: 'Master' },
 ];
-const ROUND_PRESETS = [10, 15, 20, 25];
 
 export function CountDownRulesForm() {
   const navigate = useNavigate();
@@ -45,32 +44,9 @@ export function CountDownRulesForm() {
   );
   const [inRule, setInRule] = useState<InRule>(config?.inRule ?? 'straight');
   const [outRule, setOutRule] = useState<OutRule>(config?.outRule ?? 'straight');
-  const [maxRounds, setMaxRounds] = useState<number | ''>(config?.maxRounds ?? '');
-  const [customRounds, setCustomRounds] = useState(
-    config?.maxRounds && !ROUND_PRESETS.includes(config.maxRounds) ? String(config.maxRounds) : ''
-  );
-  const [roundsOpen, setRoundsOpen] = useState(config?.maxRounds !== undefined);
+  const [maxRounds, setMaxRounds] = useState<number | undefined>(config?.maxRounds);
 
   const effectiveScore = customScore ? Number(customScore) : startingScore;
-  const effectiveRounds = customRounds ? Number(customRounds) : maxRounds;
-
-  const handleRoundsPreset = (value: number | '') => {
-    setMaxRounds(value);
-    setCustomRounds('');
-  };
-
-  const handleCustomRounds = (value: string) => {
-    setCustomRounds(value);
-    if (value) {
-      const num = Number(value);
-      if (ROUND_PRESETS.includes(num)) {
-        setMaxRounds(num);
-        setCustomRounds('');
-      } else {
-        setMaxRounds('');
-      }
-    }
-  };
 
   const handleContinue = () => {
     setConfig({
@@ -78,7 +54,7 @@ export function CountDownRulesForm() {
       startingScore: Math.max(1, effectiveScore),
       inRule,
       outRule,
-      maxRounds: effectiveRounds ? Math.max(1, Number(effectiveRounds)) : undefined,
+      maxRounds,
     });
     setStep('players');
   };
@@ -136,8 +112,8 @@ export function CountDownRulesForm() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="flex-1 space-y-2">
               <Label>In Rule</Label>
               <div className="flex flex-wrap gap-2">
                 {IN_RULES.map(({ value, label }) => (
@@ -154,7 +130,7 @@ export function CountDownRulesForm() {
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex-1 space-y-2">
               <Label>Out Rule</Label>
               <div className="flex flex-wrap gap-2">
                 {OUT_RULES.map(({ value, label }) => (
@@ -172,46 +148,7 @@ export function CountDownRulesForm() {
             </div>
           </div>
 
-          <Collapsible open={roundsOpen} onOpenChange={setRoundsOpen}>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="flex w-full justify-between px-0">
-                <span>Max Rounds {effectiveRounds ? `(${effectiveRounds})` : '(Off)'}</span>
-                {roundsOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-2">
-              <div className="grid grid-cols-4 gap-2">
-                <Button
-                  type="button"
-                  variant={maxRounds === '' && customRounds === '' ? 'default' : 'outline'}
-                  onClick={() => handleRoundsPreset('')}
-                >
-                  Off
-                </Button>
-                {ROUND_PRESETS.map((rounds) => (
-                  <Button
-                    key={rounds}
-                    type="button"
-                    variant={maxRounds === rounds && !customRounds ? 'default' : 'outline'}
-                    onClick={() => handleRoundsPreset(rounds)}
-                  >
-                    {rounds}
-                  </Button>
-                ))}
-              </div>
-              <Input
-                type="number"
-                min={1}
-                placeholder="Custom rounds"
-                value={customRounds}
-                onChange={(e) => handleCustomRounds(e.target.value)}
-              />
-            </CollapsibleContent>
-          </Collapsible>
+          <MaxRoundsCollapsible value={maxRounds} onChange={setMaxRounds} />
 
           <Button className="w-full" onClick={handleContinue}>
             <Users className="mr-2 h-4 w-4" />

@@ -5,10 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getMode } from '@/game-engine/registry';
-import { useGameStore } from '@/store/gameStore';
-import { DartInput } from './DartInput';
-import { Scoreboard } from './Scoreboard';
-import { TurnHistory } from './TurnHistory';
+import { useGameStore } from '@/store/game-store';
+import { DartInput } from './dart-input';
+import { Scoreboard } from './scoreboard';
+import { TurnHistory } from './turn-history';
 
 export function ScoreScreen() {
   const navigate = useNavigate();

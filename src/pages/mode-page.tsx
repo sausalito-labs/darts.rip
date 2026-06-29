@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlayerSetup } from '@/components/PlayerSetup';
-import { CountDownRulesForm } from '@/components/rules/CountDownRulesForm';
-import { CountUpRulesForm } from '@/components/rules/CountUpRulesForm';
-import { ScoreScreen } from '@/components/scoring/ScoreScreen';
+import { PlayerSetup } from '@/components/player-setup';
+import { CountDownRulesForm } from '@/components/rules/count-down-rules-form';
+import { CountUpRulesForm } from '@/components/rules/count-up-rules-form';
+import { ScoreScreen } from '@/components/scoring/score-screen';
 import { getMode } from '@/game-engine/registry';
-import { useGameStore } from '@/store/gameStore';
+import { useGameStore } from '@/store/game-store';
 
 interface ModePageProps {
   modeId: string;

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getAllModes } from '@/game-engine/registry';
-import { useGameStore } from '@/store/gameStore';
+import { useGameStore } from '@/store/game-store';
 
 const icons: Record<string, React.ReactNode> = {
   'count-up': <Target className="h-8 w-8" />,
@@ -30,9 +30,7 @@ export function ModeSelectPage() {
           <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl">
             darts.rip
           </h1>
-          <p className="mt-2 text-muted-foreground">
-            Select a game mode.
-          </p>
+          <p className="mt-2 text-muted-foreground">Select a game mode.</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

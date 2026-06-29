@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useGameStore } from '@/store/gameStore';
+import { useGameStore } from '@/store/game-store';
 
 interface SortablePlayerItemProps {
   player: { id: string; name: string; color: string };

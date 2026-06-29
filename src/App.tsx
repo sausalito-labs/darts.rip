@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { ComingSoonPage } from '@/pages/ComingSoonPage';
-import { ModePage } from '@/pages/ModePage';
-import { ModeSelectPage } from '@/pages/ModeSelectPage';
+import { ComingSoonPage } from '@/pages/coming-soon-page';
+import { ModePage } from '@/pages/mode-page';
+import { ModeSelectPage } from '@/pages/mode-select-page';
 
 function App() {
   return (

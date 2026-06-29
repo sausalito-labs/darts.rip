@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getMode } from '@/game-engine/registry';
 import { formatDartThrow } from '@/game-engine/utils';
 import { cn } from '@/lib/utils';
-import { useGameStore } from '@/store/gameStore';
+import { useGameStore } from '@/store/game-store';
 
 export function TurnHistory() {
   const modeId = useGameStore((s) => s.currentModeId);

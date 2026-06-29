@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { useGameStore } from '@/store/gameStore';
+import { useGameStore } from '@/store/game-store';
 
 export function Scoreboard() {
   const gameState = useGameStore((s) => s.gameState);
