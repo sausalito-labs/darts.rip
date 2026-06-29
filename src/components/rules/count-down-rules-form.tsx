@@ -9,6 +9,7 @@ import type { InRule, OutRule } from '@/game-engine/types';
 import { useGameStore } from '@/store/game-store';
 import { MaxRoundsCollapsible } from './max-rounds-collapsible';
 import { PresetNumberPicker } from './preset-number-picker';
+import { RuleHelpDialog } from './rule-help-dialog';
 
 const STARTING_SCORES = [301, 501, 701];
 const IN_RULES: { value: InRule; label: string }[] = [
@@ -79,7 +80,10 @@ export function CountDownRulesForm() {
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <div className="flex-1 space-y-2">
-              <Label>In Rule</Label>
+              <div className="flex items-center gap-1">
+                <Label>In Rule</Label>
+                <RuleHelpDialog />
+              </div>
               <ToggleGroup
                 type="single"
                 variant="outline"
@@ -101,7 +105,10 @@ export function CountDownRulesForm() {
             </div>
 
             <div className="flex-1 space-y-2">
-              <Label>Out Rule</Label>
+              <div className="flex items-center gap-1">
+                <Label>Out Rule</Label>
+                <RuleHelpDialog />
+              </div>
               <ToggleGroup
                 type="single"
                 variant="outline"
