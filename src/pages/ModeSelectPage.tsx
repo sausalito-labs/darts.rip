@@ -31,7 +31,7 @@ export function ModeSelectPage() {
             darts.rip
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Pick a game mode and let the app handle the math.
+            Select a game mode.
           </p>
         </div>
 

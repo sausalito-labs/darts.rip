@@ -5,7 +5,7 @@ export const cutthroatMode: GameMode = {
   id: 'cutthroat',
   name: 'Cutthroat',
   available: false,
-  description: 'Coming soon — knock out your opponents while staying alive.',
+  description: 'Knock out your opponents while staying alive.',
 
   defaultConfig(): GameConfig {
     return { mode: 'count-up', targetScore: 0 };

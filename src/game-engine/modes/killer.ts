@@ -5,7 +5,7 @@ export const killerMode: GameMode = {
   id: 'killer',
   name: 'Killer',
   available: false,
-  description: 'Coming soon — claim a number and eliminate the competition.',
+  description: 'Claim a number and eliminate the competition.',
 
   defaultConfig(): GameConfig {
     return { mode: 'count-up', targetScore: 0 };
