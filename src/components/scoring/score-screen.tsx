@@ -4,6 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { getMode } from '@/game-engine/registry';
 import { useGameStore } from '@/store/game-store';
 import { DartInput } from './dart-input';
@@ -43,9 +53,27 @@ export function ScoreScreen() {
     <div className="mx-auto max-w-3xl">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-sm text-muted-foreground">Round {gameState.round}</div>
-        <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
-          <Home className="h-4 w-4" />
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Home className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Leave Game?</DialogTitle>
+              <DialogDescription>
+                Your current game progress will be lost if you return home.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Keep Playing</Button>
+              </DialogClose>
+              <Button onClick={() => navigate('/')}>Return Home</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Card className={`mb-4 transition-colors ${bustFlash ? 'bg-destructive/20' : ''}`}>
