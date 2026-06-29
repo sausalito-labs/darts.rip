@@ -28,7 +28,7 @@ export function ModeSelectPage() {
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-            darts.fun
+            darts.rip
           </h1>
           <p className="mt-2 text-muted-foreground">
             Pick a game mode and let the app handle the math.

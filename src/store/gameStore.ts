@@ -144,7 +144,7 @@ export const useGameStore = create<AppState & AppActions>()(
       resetAll: () => set(initialState),
     }),
     {
-      name: 'darts.fun.state',
+      name: 'darts.rip.state',
       partialize: (state) => ({
         currentModeId: state.currentModeId,
         currentStep: state.currentStep,

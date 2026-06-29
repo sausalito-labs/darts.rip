@@ -12,8 +12,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'darts.fun',
-        short_name: 'darts.fun',
+        name: 'darts.rip',
+        short_name: 'darts.rip',
         description: 'A slick darts score tracker.',
         theme_color: '#09090b',
         background_color: '#09090b',

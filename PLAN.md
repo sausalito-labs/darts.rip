@@ -1,4 +1,4 @@
-# darts.fun — Product & Architecture Plan
+# darts.rip — Product & Architecture Plan
 
 ## Overview
 A companion PWA for playing darts. Players pick a game mode, configure rules,
