@@ -125,7 +125,11 @@ export function CountDownRulesForm() {
                 className="w-full"
               >
                 {IN_RULES.map(({ value, label }) => (
-                  <ToggleGroupItem key={value} value={value} className="flex-1 sm:flex-initial">
+                  <ToggleGroupItem
+                    key={value}
+                    value={value}
+                    className="flex-1 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                  >
                     {label}
                   </ToggleGroupItem>
                 ))}
@@ -143,7 +147,11 @@ export function CountDownRulesForm() {
                 className="w-full"
               >
                 {OUT_RULES.map(({ value, label }) => (
-                  <ToggleGroupItem key={value} value={value} className="flex-1 sm:flex-initial">
+                  <ToggleGroupItem
+                    key={value}
+                    value={value}
+                    className="flex-1 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                  >
                     {label}
                   </ToggleGroupItem>
                 ))}
