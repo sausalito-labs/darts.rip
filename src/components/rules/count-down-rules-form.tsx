@@ -42,6 +42,8 @@ export function CountDownRulesForm() {
   const [inRule, setInRule] = useState<InRule>(config?.inRule ?? 'straight');
   const [outRule, setOutRule] = useState<OutRule>(config?.outRule ?? 'straight');
   const [maxRounds, setMaxRounds] = useState<number | undefined>(config?.maxRounds);
+  const [isStartingScoreValid, setIsStartingScoreValid] = useState(true);
+  const [isMaxRoundsValid, setIsMaxRoundsValid] = useState(true);
 
   const handleContinue = () => {
     setConfig({
@@ -75,6 +77,7 @@ export function CountDownRulesForm() {
               onChange={(value) => setStartingScore(value ?? 501)}
               placeholder="Custom score"
               required
+              onValidationChange={setIsStartingScoreValid}
             />
           </div>
 
@@ -130,9 +133,17 @@ export function CountDownRulesForm() {
             </div>
           </div>
 
-          <MaxRoundsCollapsible value={maxRounds} onChange={setMaxRounds} />
+          <MaxRoundsCollapsible
+            value={maxRounds}
+            onChange={setMaxRounds}
+            onValidationChange={setIsMaxRoundsValid}
+          />
 
-          <Button className="w-full" onClick={handleContinue}>
+          <Button
+            className="w-full"
+            disabled={!isStartingScoreValid || !isMaxRoundsValid}
+            onClick={handleContinue}
+          >
             <Users className="mr-2 h-4 w-4" />
             Choose Players
           </Button>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
@@ -8,6 +8,7 @@ interface PresetNumberPickerProps {
   onChange: (value: number | undefined) => void;
   placeholder?: string;
   required?: boolean;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 export function PresetNumberPicker({
@@ -16,6 +17,7 @@ export function PresetNumberPicker({
   onChange,
   placeholder,
   required,
+  onValidationChange,
 }: PresetNumberPickerProps) {
   const [isCustomActive, setIsCustomActive] = useState(
     value !== undefined && !presets.includes(value)
@@ -23,6 +25,11 @@ export function PresetNumberPicker({
   const [customInput, setCustomInput] = useState(
     value !== undefined && !presets.includes(value) ? String(value) : ''
   );
+
+  useEffect(() => {
+    const isValid = !(isCustomActive && customInput === '') && !(required && value === undefined);
+    onValidationChange?.(isValid);
+  }, [isCustomActive, customInput, required, value, onValidationChange]);
 
   const handleValueChange = (selected: string) => {
     if (selected === '') {
@@ -51,9 +58,10 @@ export function PresetNumberPicker({
   };
 
   const handleInputChange = (input: string) => {
-    setCustomInput(input);
-    const num = Number(input);
-    if (input && num > 0) {
+    const sanitized = input.replace(/\D/g, '').replace(/^0+/, '');
+    setCustomInput(sanitized);
+    const num = sanitized ? Number(sanitized) : NaN;
+    if (!Number.isNaN(num) && num > 0) {
       onChange(num);
     } else if (!required) {
       onChange(undefined);
@@ -90,9 +98,9 @@ export function PresetNumberPicker({
 
       {isCustomActive && (
         <Input
-          type="number"
+          type="text"
           inputMode="numeric"
-          min={1}
+          pattern="[0-9]*"
           placeholder={placeholder}
           value={customInput}
           onChange={(e) => handleInputChange(e.target.value)}

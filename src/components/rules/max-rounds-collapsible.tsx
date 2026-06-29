@@ -9,9 +9,14 @@ const ROUND_PRESETS = [10, 15, 20];
 interface MaxRoundsCollapsibleProps {
   value: number | undefined;
   onChange: (value: number | undefined) => void;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
-export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsibleProps) {
+export function MaxRoundsCollapsible({
+  value,
+  onChange,
+  onValidationChange,
+}: MaxRoundsCollapsibleProps) {
   const [open, setOpen] = useState(value !== undefined);
 
   return (
@@ -28,6 +33,7 @@ export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsiblePr
           value={value}
           onChange={onChange}
           placeholder="Custom rounds"
+          onValidationChange={onValidationChange}
         />
       </CollapsibleContent>
     </Collapsible>

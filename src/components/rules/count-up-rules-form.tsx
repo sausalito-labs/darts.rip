@@ -20,6 +20,8 @@ export function CountUpRulesForm() {
 
   const [targetScore, setTargetScore] = useState(config?.targetScore ?? 1000);
   const [maxRounds, setMaxRounds] = useState<number | undefined>(config?.maxRounds);
+  const [isTargetScoreValid, setIsTargetScoreValid] = useState(true);
+  const [isMaxRoundsValid, setIsMaxRoundsValid] = useState(true);
 
   const handleContinue = () => {
     setConfig({
@@ -51,12 +53,21 @@ export function CountUpRulesForm() {
               onChange={(value) => setTargetScore(value ?? 1000)}
               placeholder="Custom target"
               required
+              onValidationChange={setIsTargetScoreValid}
             />
           </div>
 
-          <MaxRoundsCollapsible value={maxRounds} onChange={setMaxRounds} />
+          <MaxRoundsCollapsible
+            value={maxRounds}
+            onChange={setMaxRounds}
+            onValidationChange={setIsMaxRoundsValid}
+          />
 
-          <Button className="w-full" onClick={handleContinue}>
+          <Button
+            className="w-full"
+            disabled={!isTargetScoreValid || !isMaxRoundsValid}
+            onClick={handleContinue}
+          >
             <Users className="mr-2 h-4 w-4" />
             Choose Players
           </Button>
