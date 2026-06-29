@@ -80,9 +80,7 @@ export const useGameStore = create<AppState & AppActions>()(
       updatePlayerName: (id, name) => {
         const state = get();
         set({
-          players: state.players.map((p) =>
-            p.id === id ? { ...p, name: name.trim() || p.name } : p
-          ),
+          players: state.players.map((p) => (p.id === id ? { ...p, name } : p)),
         });
       },
 
@@ -97,7 +95,8 @@ export const useGameStore = create<AppState & AppActions>()(
         const mode = state.currentModeId ? getMode(state.currentModeId) : undefined;
         if (!mode || !state.config || state.players.length === 0) return;
 
-        const gameState = mode.init(state.config, state.players);
+        const trimmedPlayers = state.players.map((p) => ({ ...p, name: p.name.trim() }));
+        const gameState = mode.init(state.config, trimmedPlayers);
         set({ gameState, currentStep: 'play', pastStates: [] });
       },
 
