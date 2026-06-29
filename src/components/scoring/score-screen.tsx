@@ -1,4 +1,4 @@
-import { Home, RotateCcw, Trophy, Users } from 'lucide-react';
+import { Home, RotateCcw, Trophy } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +16,6 @@ export function ScoreScreen() {
   const gameState = useGameStore((s) => s.gameState);
   const resetGame = useGameStore((s) => s.resetGame);
   const resetAll = useGameStore((s) => s.resetAll);
-  const setStep = useGameStore((s) => s.setStep);
   const [bustFlash, setBustFlash] = useState(false);
 
   const mode = modeId ? getMode(modeId) : undefined;
@@ -43,10 +42,6 @@ export function ScoreScreen() {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-4 flex items-center justify-between">
-        <Button variant="ghost" onClick={() => setStep('players')}>
-          <Users className="mr-2 h-4 w-4" />
-          Players
-        </Button>
         <div className="text-sm text-muted-foreground">Round {gameState.round}</div>
         <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
           <Home className="h-4 w-4" />

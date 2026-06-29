@@ -163,21 +163,16 @@ export function PlayerSetup() {
             )}
           </div>
 
-          <div className="flex gap-2 pt-2">
-            <Button variant="outline" className="flex-1" onClick={() => navigate('/')}>
-              Cancel
-            </Button>
-            <Button
-              className="flex-1"
-              disabled={players.length === 0}
-              onClick={() => {
-                startGame();
-                navigate(`/${modeId}`);
-              }}
-            >
-              Start Game
-            </Button>
-          </div>
+          <Button
+            className="w-full"
+            disabled={players.length === 0}
+            onClick={() => {
+              startGame();
+              navigate(`/${modeId}`);
+            }}
+          >
+            Start Game
+          </Button>
         </CardContent>
       </Card>
     </div>
