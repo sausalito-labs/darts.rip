@@ -16,9 +16,12 @@ export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsiblePr
     value && !ROUND_PRESETS.includes(value) ? String(value) : ''
   );
   const [open, setOpen] = useState(value !== undefined);
-  const isCustomActive = customRounds !== '';
+  const [isCustomActive, setIsCustomActive] = useState(
+    value !== undefined && !ROUND_PRESETS.includes(value)
+  );
 
   const handlePreset = (preset: number) => {
+    setIsCustomActive(false);
     if (value === preset) {
       onChange(undefined);
     } else {
@@ -29,9 +32,11 @@ export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsiblePr
 
   const handleCustomToggle = () => {
     if (isCustomActive) {
+      setIsCustomActive(false);
       setCustomRounds('');
       onChange(undefined);
     } else {
+      setIsCustomActive(true);
       const initial = value && !ROUND_PRESETS.includes(value) ? String(value) : '';
       setCustomRounds(initial);
       if (initial) {
