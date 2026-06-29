@@ -151,12 +151,14 @@ the optional max-rounds cap is reached, whichever comes first.
 - Starting scores: 301, 501, 701, custom
 - In rules: Straight In, Double In, Master In
 - Out rules: Straight Out, Double Out, Master Out
-- Optional max rounds
+  - Default: Straight Out
+- Optional max rounds (collapsible; Off by default, presets 10/15/20/25, custom)
 - Bust detection: below 0, ending on 1 with Double Out, invalid finish, etc.
 
 #### Count Up
-- Target score
-- Optional max rounds
+- Target scores: 1000, 2000, 3000, custom
+  - Default: 1000
+- Optional max rounds (collapsible; Off by default, presets 10/15/20/25, custom)
 - First to target wins; if max rounds are set, highest score wins at the cap.
 
 ## PWA

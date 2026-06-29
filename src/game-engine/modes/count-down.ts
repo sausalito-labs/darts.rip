@@ -19,7 +19,7 @@ export const countDownMode: GameMode = {
       mode: 'count-down',
       startingScore: 501,
       inRule: 'straight',
-      outRule: 'double',
+      outRule: 'straight',
     };
   },
 

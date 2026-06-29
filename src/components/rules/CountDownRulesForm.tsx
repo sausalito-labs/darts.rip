@@ -1,21 +1,26 @@
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import type { InRule, OutRule } from '@/game-engine/types';
 import { useGameStore } from '@/store/gameStore';
 
 const STARTING_SCORES = [301, 501, 701];
+const IN_RULES: { value: InRule; label: string }[] = [
+  { value: 'straight', label: 'Straight' },
+  { value: 'double', label: 'Double' },
+  { value: 'master', label: 'Master' },
+];
+const OUT_RULES: { value: OutRule; label: string }[] = [
+  { value: 'straight', label: 'Straight' },
+  { value: 'double', label: 'Double' },
+  { value: 'master', label: 'Master' },
+];
+const ROUND_PRESETS = [10, 15, 20, 25];
 
 export function CountDownRulesForm() {
   const navigate = useNavigate();
@@ -39,10 +44,33 @@ export function CountDownRulesForm() {
       : String(config?.startingScore ?? '')
   );
   const [inRule, setInRule] = useState<InRule>(config?.inRule ?? 'straight');
-  const [outRule, setOutRule] = useState<OutRule>(config?.outRule ?? 'double');
-  const [maxRounds, setMaxRounds] = useState(config?.maxRounds ?? '');
+  const [outRule, setOutRule] = useState<OutRule>(config?.outRule ?? 'straight');
+  const [maxRounds, setMaxRounds] = useState<number | ''>(config?.maxRounds ?? '');
+  const [customRounds, setCustomRounds] = useState(
+    config?.maxRounds && !ROUND_PRESETS.includes(config.maxRounds) ? String(config.maxRounds) : ''
+  );
+  const [roundsOpen, setRoundsOpen] = useState(config?.maxRounds !== undefined);
 
   const effectiveScore = customScore ? Number(customScore) : startingScore;
+  const effectiveRounds = customRounds ? Number(customRounds) : maxRounds;
+
+  const handleRoundsPreset = (value: number | '') => {
+    setMaxRounds(value);
+    setCustomRounds('');
+  };
+
+  const handleCustomRounds = (value: string) => {
+    setCustomRounds(value);
+    if (value) {
+      const num = Number(value);
+      if (ROUND_PRESETS.includes(num)) {
+        setMaxRounds(num);
+        setCustomRounds('');
+      } else {
+        setMaxRounds('');
+      }
+    }
+  };
 
   const handleContinue = () => {
     setConfig({
@@ -50,7 +78,7 @@ export function CountDownRulesForm() {
       startingScore: Math.max(1, effectiveScore),
       inRule,
       outRule,
-      maxRounds: maxRounds ? Math.max(1, Number(maxRounds)) : undefined,
+      maxRounds: effectiveRounds ? Math.max(1, Number(effectiveRounds)) : undefined,
     });
     setStep('players');
   };
@@ -70,7 +98,7 @@ export function CountDownRulesForm() {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label>Starting Score</Label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {STARTING_SCORES.map((score) => (
                 <Button
                   key={score}
@@ -84,60 +112,106 @@ export function CountDownRulesForm() {
                   {score}
                 </Button>
               ))}
+              <Button
+                type="button"
+                variant={customScore ? 'default' : 'outline'}
+                onClick={() => {
+                  setCustomScore(String(startingScore));
+                }}
+              >
+                Custom
+              </Button>
             </div>
-            <Input
-              type="number"
-              min={1}
-              placeholder="Custom score"
-              value={customScore}
-              onChange={(e) => {
-                setCustomScore(e.target.value);
-                if (e.target.value) setStartingScore(Number(e.target.value));
-              }}
-            />
+            {customScore !== '' && (
+              <Input
+                type="number"
+                min={1}
+                placeholder="Custom score"
+                value={customScore}
+                onChange={(e) => {
+                  setCustomScore(e.target.value);
+                  if (e.target.value) setStartingScore(Number(e.target.value));
+                }}
+              />
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>In Rule</Label>
-              <Select value={inRule} onValueChange={(v) => setInRule(v as InRule)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="straight">Straight In</SelectItem>
-                  <SelectItem value="double">Double In</SelectItem>
-                  <SelectItem value="master">Master In</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap gap-2">
+                {IN_RULES.map(({ value, label }) => (
+                  <Button
+                    key={value}
+                    type="button"
+                    size="sm"
+                    variant={inRule === value ? 'default' : 'outline'}
+                    onClick={() => setInRule(value)}
+                  >
+                    {label}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label>Out Rule</Label>
-              <Select value={outRule} onValueChange={(v) => setOutRule(v as OutRule)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="straight">Straight Out</SelectItem>
-                  <SelectItem value="double">Double Out</SelectItem>
-                  <SelectItem value="master">Master Out</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap gap-2">
+                {OUT_RULES.map(({ value, label }) => (
+                  <Button
+                    key={value}
+                    type="button"
+                    size="sm"
+                    variant={outRule === value ? 'default' : 'outline'}
+                    onClick={() => setOutRule(value)}
+                  >
+                    {label}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="max-rounds">Max Rounds (optional)</Label>
-            <Input
-              id="max-rounds"
-              type="number"
-              min={1}
-              placeholder="Unlimited"
-              value={maxRounds}
-              onChange={(e) => setMaxRounds(e.target.value === '' ? '' : Number(e.target.value))}
-            />
-          </div>
+          <Collapsible open={roundsOpen} onOpenChange={setRoundsOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="flex w-full justify-between px-0">
+                <span>Max Rounds {effectiveRounds ? `(${effectiveRounds})` : '(Off)'}</span>
+                {roundsOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-2">
+              <div className="grid grid-cols-4 gap-2">
+                <Button
+                  type="button"
+                  variant={maxRounds === '' && customRounds === '' ? 'default' : 'outline'}
+                  onClick={() => handleRoundsPreset('')}
+                >
+                  Off
+                </Button>
+                {ROUND_PRESETS.map((rounds) => (
+                  <Button
+                    key={rounds}
+                    type="button"
+                    variant={maxRounds === rounds && !customRounds ? 'default' : 'outline'}
+                    onClick={() => handleRoundsPreset(rounds)}
+                  >
+                    {rounds}
+                  </Button>
+                ))}
+              </div>
+              <Input
+                type="number"
+                min={1}
+                placeholder="Custom rounds"
+                value={customRounds}
+                onChange={(e) => handleCustomRounds(e.target.value)}
+              />
+            </CollapsibleContent>
+          </Collapsible>
 
           <Button className="w-full" onClick={handleContinue}>
             <Users className="mr-2 h-4 w-4" />
