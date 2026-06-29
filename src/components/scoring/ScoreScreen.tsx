@@ -1,4 +1,4 @@
-import { Home, Redo2, RotateCcw, Trophy, Undo2, Users } from 'lucide-react';
+import { Home, RotateCcw, Trophy, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -17,10 +17,6 @@ export function ScoreScreen() {
   const resetGame = useGameStore((s) => s.resetGame);
   const resetAll = useGameStore((s) => s.resetAll);
   const setStep = useGameStore((s) => s.setStep);
-  const undo = useGameStore((s) => s.undo);
-  const redo = useGameStore((s) => s.redo);
-  const canUndo = useGameStore((s) => s.pastStates.length > 0);
-  const canRedo = useGameStore((s) => s.futureStates.length > 0);
   const [bustFlash, setBustFlash] = useState(false);
 
   const mode = modeId ? getMode(modeId) : undefined;
@@ -83,17 +79,6 @@ export function ScoreScreen() {
       </Card>
 
       <DartInput onThrow={handleThrow} disabled={isGameOver} />
-
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <Button variant="outline" disabled={!canUndo || isGameOver} onClick={undo}>
-          <Undo2 className="mr-2 h-4 w-4" />
-          Undo
-        </Button>
-        <Button variant="outline" disabled={!canRedo || isGameOver} onClick={redo}>
-          <Redo2 className="mr-2 h-4 w-4" />
-          Redo
-        </Button>
-      </div>
 
       <div className="mt-4">
         <TurnHistory />

@@ -75,7 +75,6 @@ interface GameMode {
   throwDart(state: GameState, dart: DartThrow): GameState;
   isGameOver(state: GameState): boolean;
   getCurrentPlayer(state: GameState): Player;
-  getRankings(state: GameState): PlayerRanking[];
 }
 ```
 
@@ -98,14 +97,13 @@ reloads. The store delegates scoring decisions to the active game engine.
 ### Dart Input Keypad
 The play screen shows a keypad with only valid dartboard segments:
 - Numbers 1–20
-- 25 (outer bull)
-- 50 (inner bull)
-- Miss (0)
+- 25 (bull)
+- 0 (miss)
 
 A separate multiplier toggle controls how the next throw is recorded:
-- Single (×1)
 - Double (×2)
 - Triple (×3)
+- Single (×1) is implicit when no toggle is active.
 
 Bull values are fixed: 25 single, 25 double = 50. Triple is not allowed on bull.
 
@@ -121,12 +119,11 @@ Example keypad interaction:
 - If the throw causes a bust, the entire turn is discarded and the next player
   is activated immediately.
 
-### Undo / Redo
-The score input screen provides **Undo** and **Redo** buttons:
+### Undo
+The dart input keypad includes an **Undo** button:
 - **Undo** reverts the most recent dart throw, restoring the game state from
   before that throw.
-- **Redo** re-applies a dart that was previously undone.
-- The undo/redo stack is cleared when a new game is started or reset.
+- The undo stack is cleared when a new game is started or reset.
 - The stack is capped to avoid unbounded localStorage growth.
 
 ### Bust Detection — Count Down
@@ -171,7 +168,7 @@ caching.
 - Player setup with add/remove/rename/reorder/randomize
 - Dart input keypad with single/double/triple multipliers
 - Turn history, bust detection, game-over screen
-- Undo / redo throws during active scoring
+- Undo throws during active scoring
 - localStorage persistence and offline PWA support
 
 ## Future

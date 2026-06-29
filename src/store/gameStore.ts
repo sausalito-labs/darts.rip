@@ -15,7 +15,6 @@ interface AppState {
   config: GameConfig | null;
   gameState: GameState | null;
   pastStates: GameState[];
-  futureStates: GameState[];
 }
 
 interface AppActions {
@@ -30,7 +29,6 @@ interface AppActions {
   startGame: () => void;
   throwDart: (segment: number, multiplier: 1 | 2 | 3) => void;
   undo: () => void;
-  redo: () => void;
   resetGame: () => void;
   resetAll: () => void;
 }
@@ -42,12 +40,7 @@ const initialState: AppState = {
   config: null,
   gameState: null,
   pastStates: [],
-  futureStates: [],
 };
-
-function clearGameHistory(): Pick<AppState, 'pastStates' | 'futureStates'> {
-  return { pastStates: [], futureStates: [] };
-}
 
 export const useGameStore = create<AppState & AppActions>()(
   persist(
@@ -63,7 +56,7 @@ export const useGameStore = create<AppState & AppActions>()(
           currentStep: 'rules',
           config: mode.defaultConfig(),
           gameState: null,
-          ...clearGameHistory(),
+          pastStates: [],
         });
       },
 
@@ -105,7 +98,7 @@ export const useGameStore = create<AppState & AppActions>()(
         if (!mode || !state.config || state.players.length === 0) return;
 
         const gameState = mode.init(state.config, state.players);
-        set({ gameState, currentStep: 'play', ...clearGameHistory() });
+        set({ gameState, currentStep: 'play', pastStates: [] });
       },
 
       throwDart: (segment, multiplier) => {
@@ -122,7 +115,7 @@ export const useGameStore = create<AppState & AppActions>()(
 
         const newGameState = mode.throwDart(state.gameState, dart);
         const pastStates = [state.gameState, ...state.pastStates].slice(0, UNDO_STACK_LIMIT);
-        set({ gameState: newGameState, pastStates, futureStates: [] });
+        set({ gameState: newGameState, pastStates });
       },
 
       undo: () => {
@@ -133,19 +126,6 @@ export const useGameStore = create<AppState & AppActions>()(
         set({
           gameState: previous,
           pastStates: state.pastStates.slice(1),
-          futureStates: [state.gameState, ...state.futureStates].slice(0, UNDO_STACK_LIMIT),
-        });
-      },
-
-      redo: () => {
-        const state = get();
-        const next = state.futureStates[0];
-        if (!next || !state.gameState) return;
-
-        set({
-          gameState: next,
-          futureStates: state.futureStates.slice(1),
-          pastStates: [state.gameState, ...state.pastStates].slice(0, UNDO_STACK_LIMIT),
         });
       },
 
@@ -153,12 +133,12 @@ export const useGameStore = create<AppState & AppActions>()(
         const state = get();
         const mode = state.currentModeId ? getMode(state.currentModeId) : undefined;
         if (!mode || !state.config || state.players.length === 0) {
-          set({ gameState: null, currentStep: 'rules', ...clearGameHistory() });
+          set({ gameState: null, currentStep: 'rules', pastStates: [] });
           return;
         }
 
         const gameState = mode.init(state.config, state.players);
-        set({ gameState, currentStep: 'play', ...clearGameHistory() });
+        set({ gameState, currentStep: 'play', pastStates: [] });
       },
 
       resetAll: () => set(initialState),
@@ -172,7 +152,6 @@ export const useGameStore = create<AppState & AppActions>()(
         config: state.config,
         gameState: state.gameState,
         pastStates: state.pastStates,
-        futureStates: state.futureStates,
       }),
     }
   )
