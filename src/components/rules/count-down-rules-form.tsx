@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import type { InRule, OutRule } from '@/game-engine/types';
 import { useGameStore } from '@/store/game-store';
 import { MaxRoundsCollapsible } from './max-rounds-collapsible';
+import { PresetNumberPicker } from './preset-number-picker';
 
 const STARTING_SCORES = [301, 501, 701];
 const IN_RULES: { value: InRule; label: string }[] = [
@@ -38,21 +38,14 @@ export function CountDownRulesForm() {
   const setStep = useGameStore((s) => s.setStep);
 
   const [startingScore, setStartingScore] = useState(config?.startingScore ?? 501);
-  const [customScore, setCustomScore] = useState(
-    STARTING_SCORES.includes(config?.startingScore ?? 501)
-      ? ''
-      : String(config?.startingScore ?? '')
-  );
   const [inRule, setInRule] = useState<InRule>(config?.inRule ?? 'straight');
   const [outRule, setOutRule] = useState<OutRule>(config?.outRule ?? 'straight');
   const [maxRounds, setMaxRounds] = useState<number | undefined>(config?.maxRounds);
 
-  const effectiveScore = customScore ? Number(customScore) : startingScore;
-
   const handleContinue = () => {
     setConfig({
       mode: 'count-down',
-      startingScore: Math.max(1, effectiveScore),
+      startingScore,
       inRule,
       outRule,
       maxRounds,
@@ -75,42 +68,13 @@ export function CountDownRulesForm() {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label>Starting Score</Label>
-            <div className="grid grid-cols-4 gap-2">
-              {STARTING_SCORES.map((score) => (
-                <Button
-                  key={score}
-                  type="button"
-                  variant={startingScore === score && !customScore ? 'default' : 'outline'}
-                  onClick={() => {
-                    setStartingScore(score);
-                    setCustomScore('');
-                  }}
-                >
-                  {score}
-                </Button>
-              ))}
-              <Button
-                type="button"
-                variant={customScore ? 'default' : 'outline'}
-                onClick={() => {
-                  setCustomScore(String(startingScore));
-                }}
-              >
-                Custom
-              </Button>
-            </div>
-            {customScore !== '' && (
-              <Input
-                type="number"
-                min={1}
-                placeholder="Custom score"
-                value={customScore}
-                onChange={(e) => {
-                  setCustomScore(e.target.value);
-                  if (e.target.value) setStartingScore(Number(e.target.value));
-                }}
-              />
-            )}
+            <PresetNumberPicker
+              presets={STARTING_SCORES}
+              value={startingScore}
+              onChange={(value) => setStartingScore(value ?? 501)}
+              placeholder="Custom score"
+              required
+            />
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row">

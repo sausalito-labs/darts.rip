@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useGameStore } from '@/store/game-store';
 import { MaxRoundsCollapsible } from './max-rounds-collapsible';
+import { PresetNumberPicker } from './preset-number-picker';
 
 const TARGET_SCORES = [1000, 2000, 3000];
 
@@ -19,17 +19,12 @@ export function CountUpRulesForm() {
   const setStep = useGameStore((s) => s.setStep);
 
   const [targetScore, setTargetScore] = useState(config?.targetScore ?? 1000);
-  const [customScore, setCustomScore] = useState(
-    TARGET_SCORES.includes(config?.targetScore ?? 1000) ? '' : String(config?.targetScore ?? '')
-  );
   const [maxRounds, setMaxRounds] = useState<number | undefined>(config?.maxRounds);
-
-  const effectiveScore = customScore ? Number(customScore) : targetScore;
 
   const handleContinue = () => {
     setConfig({
       mode: 'count-up',
-      targetScore: Math.max(1, effectiveScore),
+      targetScore,
       maxRounds,
     });
     setStep('players');
@@ -50,42 +45,13 @@ export function CountUpRulesForm() {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label>Target Score</Label>
-            <div className="grid grid-cols-4 gap-2">
-              {TARGET_SCORES.map((score) => (
-                <Button
-                  key={score}
-                  type="button"
-                  variant={targetScore === score && !customScore ? 'default' : 'outline'}
-                  onClick={() => {
-                    setTargetScore(score);
-                    setCustomScore('');
-                  }}
-                >
-                  {score}
-                </Button>
-              ))}
-              <Button
-                type="button"
-                variant={customScore ? 'default' : 'outline'}
-                onClick={() => {
-                  setCustomScore(String(targetScore));
-                }}
-              >
-                Custom
-              </Button>
-            </div>
-            {customScore !== '' && (
-              <Input
-                type="number"
-                min={1}
-                placeholder="Custom target"
-                value={customScore}
-                onChange={(e) => {
-                  setCustomScore(e.target.value);
-                  if (e.target.value) setTargetScore(Number(e.target.value));
-                }}
-              />
-            )}
+            <PresetNumberPicker
+              presets={TARGET_SCORES}
+              value={targetScore}
+              onChange={(value) => setTargetScore(value ?? 1000)}
+              placeholder="Custom target"
+              required
+            />
           </div>
 
           <MaxRoundsCollapsible value={maxRounds} onChange={setMaxRounds} />

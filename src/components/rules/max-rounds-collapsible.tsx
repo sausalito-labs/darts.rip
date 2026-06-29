@@ -2,7 +2,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Input } from '@/components/ui/input';
+import { PresetNumberPicker } from './preset-number-picker';
 
 const ROUND_PRESETS = [10, 15, 20];
 
@@ -12,48 +12,7 @@ interface MaxRoundsCollapsibleProps {
 }
 
 export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsibleProps) {
-  const [customRounds, setCustomRounds] = useState(
-    value && !ROUND_PRESETS.includes(value) ? String(value) : ''
-  );
   const [open, setOpen] = useState(value !== undefined);
-  const [isCustomActive, setIsCustomActive] = useState(
-    value !== undefined && !ROUND_PRESETS.includes(value)
-  );
-
-  const handlePreset = (preset: number) => {
-    setIsCustomActive(false);
-    if (value === preset) {
-      onChange(undefined);
-    } else {
-      onChange(preset);
-      setCustomRounds('');
-    }
-  };
-
-  const handleCustomToggle = () => {
-    if (isCustomActive) {
-      setIsCustomActive(false);
-      setCustomRounds('');
-      onChange(undefined);
-    } else {
-      setIsCustomActive(true);
-      const initial = value && !ROUND_PRESETS.includes(value) ? String(value) : '';
-      setCustomRounds(initial);
-      if (initial) {
-        onChange(Number(initial));
-      }
-    }
-  };
-
-  const handleCustomChange = (input: string) => {
-    setCustomRounds(input);
-    const num = input ? Number(input) : NaN;
-    if (!Number.isNaN(num) && num > 0) {
-      onChange(num);
-    } else {
-      onChange(undefined);
-    }
-  };
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
@@ -64,34 +23,12 @@ export function MaxRoundsCollapsible({ value, onChange }: MaxRoundsCollapsiblePr
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2">
-        <div className="grid grid-cols-4 gap-2">
-          {ROUND_PRESETS.map((rounds) => (
-            <Button
-              key={rounds}
-              type="button"
-              variant={value === rounds && !isCustomActive ? 'default' : 'outline'}
-              onClick={() => handlePreset(rounds)}
-            >
-              {rounds}
-            </Button>
-          ))}
-          <Button
-            type="button"
-            variant={isCustomActive ? 'default' : 'outline'}
-            onClick={handleCustomToggle}
-          >
-            Custom
-          </Button>
-        </div>
-        {isCustomActive && (
-          <Input
-            type="number"
-            min={1}
-            placeholder="Custom rounds"
-            value={customRounds}
-            onChange={(e) => handleCustomChange(e.target.value)}
-          />
-        )}
+        <PresetNumberPicker
+          presets={ROUND_PRESETS}
+          value={value}
+          onChange={onChange}
+          placeholder="Custom rounds"
+        />
       </CollapsibleContent>
     </Collapsible>
   );
