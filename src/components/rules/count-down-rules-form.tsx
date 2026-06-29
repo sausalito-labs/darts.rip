@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import type { InRule, OutRule } from '@/game-engine/types';
 import { useGameStore } from '@/store/game-store';
 import { MaxRoundsCollapsible } from './max-rounds-collapsible';
@@ -115,36 +116,38 @@ export function CountDownRulesForm() {
           <div className="flex flex-col gap-4 sm:flex-row">
             <div className="flex-1 space-y-2">
               <Label>In Rule</Label>
-              <div className="flex flex-wrap gap-2">
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                size="sm"
+                value={inRule}
+                onValueChange={(value) => value && setInRule(value as InRule)}
+                className="w-full"
+              >
                 {IN_RULES.map(({ value, label }) => (
-                  <Button
-                    key={value}
-                    type="button"
-                    size="sm"
-                    variant={inRule === value ? 'default' : 'outline'}
-                    onClick={() => setInRule(value)}
-                  >
+                  <ToggleGroupItem key={value} value={value} className="flex-1 sm:flex-initial">
                     {label}
-                  </Button>
+                  </ToggleGroupItem>
                 ))}
-              </div>
+              </ToggleGroup>
             </div>
 
             <div className="flex-1 space-y-2">
               <Label>Out Rule</Label>
-              <div className="flex flex-wrap gap-2">
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                size="sm"
+                value={outRule}
+                onValueChange={(value) => value && setOutRule(value as OutRule)}
+                className="w-full"
+              >
                 {OUT_RULES.map(({ value, label }) => (
-                  <Button
-                    key={value}
-                    type="button"
-                    size="sm"
-                    variant={outRule === value ? 'default' : 'outline'}
-                    onClick={() => setOutRule(value)}
-                  >
+                  <ToggleGroupItem key={value} value={value} className="flex-1 sm:flex-initial">
                     {label}
-                  </Button>
+                  </ToggleGroupItem>
                 ))}
-              </div>
+              </ToggleGroup>
             </div>
           </div>
 
